@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard - VTernship</title>
+
+<link rel="stylesheet" href="css/styles.css">
+<script src="js/auth.js"></script>
+<script src="js/script.js"></script>
+
+<style>
+.dashboard { padding:120px 0 60px; }
+
+/* ===== Layout ===== */
+.dashboard-wrapper{display:flex;}
+.dashboard-main{flex:1;padding:0 30px;}
+.dashboard-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:20px;margin-top:20px;
+}
+
+/* ===== Sidebar ===== */
+.sidebar{
+width:240px;background:#fff;
+min-height:calc(100vh - 120px);
+padding:20px;border-right:1px solid #eee;
+position:sticky;top:120px;
+}
+.sidebar h3{margin-bottom:15px;}
+.sidebar a{
+display:block;color:#333;
+padding:10px 0;text-decoration:none;
+}
+.sidebar a:hover,
+.sidebar a.active{color:#6366f1;font-weight:600}
+
+/* ===== Cards ===== */
+.dashboard-card{
+background:#fff;padding:20px;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,.05);
+}
+
+.welcome-card{
+background:linear-gradient(135deg,#6366f1,#8b5cf6);
+color:white;padding:30px;border-radius:16px;
+display:flex;justify-content:space-between;
+align-items:center;
+}
+
+.avatar-large{
+width:90px;height:90px;border-radius:50%;
+background:rgba(255,255,255,.3);
+display:flex;align-items:center;
+justify-content:center;font-size:26px;
+font-weight:bold;
+}
+
+/* ===== Stats ===== */
+.stats-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;margin-top:20px;
+}
+
+.stat-card{
+background:#fff;padding:15px;
+border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,.05);
+}
+.stat-number{
+font-size:26px;font-weight:bold;margin-top:5px;
+}
+
+/* ===== Progress ===== */
+.progress-bar{
+height:8px;background:#eee;
+border-radius:6px;overflow:hidden;margin-top:10px;
+}
+.progress-fill{
+height:100%;
+background:#6366f1;
+}
+
+/* ===== Tasks ===== */
+.task-item{
+display:flex;justify-content:space-between;
+margin-bottom:8px;
+}
+
+/* ===== Tracks ===== */
+.track-card{
+background:#fff;padding:15px;border-radius:12px;
+box-shadow:0 4px 10px rgba(0,0,0,.05);
+}
+.tracks-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:15px;margin-top:15px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== Navbar ===== -->
+<nav class="navbar">
+<div class="container nav-container">
+<div class="logo" onclick="window.location.href='index.html'">
+<span class="logo-icon">V</span>
+<span class="logo-text">Ternship</span>
+</div>
+
+<ul class="nav-links">
+<li><a href="index.html">Home</a></li>
+<li><a href="how-it-works.html">How It Works</a></li>
+<li><a href="about.html">About Us</a></li>
+<li><a href="contact.html">Contact</a></li>
+</ul>
+
+<div id="navAuth"></div>
+</div>
+</nav>
+
+<!-- ===== Dashboard ===== -->
+<section class="dashboard">
+<div class="dashboard-wrapper">
+
+<!-- Sidebar -->
+<div class="sidebar">
+<h3>MAIN</h3>
+<a class="active">Dashboard</a>
+<a href="internships.html">Internship</a>
+<a href="my-applications.html">My Applications</a>
+          <a href="tasks.html">Tasks</a>
+          <a href="certificates.html">Certificates</a>
+         <a href="soft-skill-assessment.html">Notifications</a>
+          <a href="browse-internships.html">Browse Internship</a>
+         <a href="notifications.html">Notifications</a>
+         <a href="help-center.html">Help Center</a>
+</div>
+
+<!-- Main Content -->
+<div class="dashboard-main">
+<div id="dashboardContent"></div>
+</div>
+
+</div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="footer">
+<div class="container">
+<p style="text-align:center;">© 2026 VTernship</p>
+</div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+const user = JSON.parse(localStorage.getItem('vternship_user'));
+const role = localStorage.getItem('vternship_role');
+
+if(!user || role!=='student'){
+window.location.href='auth/signin.html';
+return;
+}
+
+loadStudentDashboard(user);
+});
+
+function loadStudentDashboard(user){
+document.getElementById('dashboardContent').innerHTML = `
+
+<div class="welcome-card">
+<div>
+<h2>Welcome, ${user.first_name}!</h2>
+<p>Keep track of your internship progress.</p>
+</div>
+<div class="avatar-large">
+${user.first_name[0]}${user.last_name[0]}
+</div>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+<div class="stat-card">
+<div>Active Internship</div>
+<div class="stat-number">1</div>
+</div>
+<div class="stat-card">
+<div>Pending Tasks</div>
+<div class="stat-number">3</div>
+</div>
+<div class="stat-card">
+<div>Completed Tasks</div>
+<div class="stat-number">9</div>
+</div>
+<div class="stat-card">
+<div>Score</div>
+<div class="stat-number">87%</div>
+</div>
+</div>
+
+<div class="dashboard-grid">
+
+<div class="dashboard-card">
+<h3>Your Profile</h3>
+<p><b>Name:</b> ${user.first_name} ${user.last_name}</p>
+<p><b>Email:</b> ${user.email}</p>
+<p><b>Skills:</b> ${user.skills || 'Not added yet'}</p>
+<a href="auth/account-settings.html" class="btn-secondary">Edit Profile</a>
+</div>
+
+<div class="dashboard-card">
+<h3>Internship Progress</h3>
+<p>Frontend Developer Internship</p>
+<div class="progress-bar">
+<div class="progress-fill" style="width:65%"></div>
+</div>
+<p>65% completed</p>
+</div>
+
+<div class="dashboard-card">
+<h3>Daily Tasks</h3>
+<div class="task-item">
+<span>Landing Page Task</span>
+<span>Today</span>
+</div>
+<div class="task-item">
+<span>API Integration</span>
+<span>2 Days</span>
+</div>
+<div class="task-item">
+<span>Sprint Review</span>
+<span>4 Days</span>
+</div>
+</div>
+
+</div>
+
+<h2 style="margin-top:40px;">Recommended Tracks</h2>
+
+<div class="tracks-grid">
+<div class="track-card">
+<h4>Web Development</h4>
+<p>Build modern applications.</p>
+</div>
+<div class="track-card">
+<h4>Data Analysis</h4>
+<p>Analyze and visualize data.</p>
+</div>
+<div class="track-card">
+<h4>Machine Learning</h4>
+<p>Develop AI models.</p>
+</div>
+</div>
+`;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company Dashboard - VTernship</title>
+
+<link rel="stylesheet" href="css/styles.css">
+<script src="js/auth.js"></script>
+
+<style>
+body{background:#f8fafc}
+
+/* Dashboard Layout */
+.dashboard{padding:120px 0 60px}
+.dashboard-wrapper{display:flex}
+
+/* Sidebar */
+.company-sidebar{
+width:250px;
+background:linear-gradient(180deg,#6366f1,#8b5cf6);
+color:white;
+min-height:calc(100vh - 120px);
+padding:22px;
+box-shadow:4px 0 16px rgba(0,0,0,.08);
+}
+
+.company-sidebar h3{margin-bottom:20px}
+
+.company-sidebar a{
+display:block;
+padding:12px;
+margin-bottom:6px;
+border-radius:8px;
+text-decoration:none;
+color:rgba(255,255,255,.9);
+font-size:15px;
+}
+
+.company-sidebar a:hover,
+.company-sidebar a.active{
+background:rgba(255,255,255,.18);
+color:white;
+}
+
+/* Main */
+.company-main{flex:1;padding:0 30px}
+
+/* Welcome */
+.welcome-card{
+background:linear-gradient(135deg,#6366f1,#8b5cf6);
+color:white;
+padding:2.5rem;
+border-radius:16px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 8px 24px rgba(99,102,241,.25);
+}
+
+.welcome-card h2{margin-bottom:10px}
+
+.avatar-large{
+width:90px;height:90px;border-radius:50%;
+background:rgba(255,255,255,.25);
+display:flex;align-items:center;
+justify-content:center;
+font-size:24px;
+font-weight:bold;
+}
+
+/* Stats */
+.dashboard-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:1.5rem;
+margin-top:2rem;
+}
+
+.dashboard-card{
+background:white;
+padding:2rem;
+border-radius:14px;
+box-shadow:0 4px 14px rgba(0,0,0,.06);
+transition:.25s;
+}
+
+.dashboard-card:hover{
+transform:translateY(-4px);
+}
+
+.stat-number{
+font-size:30px;
+font-weight:bold;
+color:#6366f1;
+margin:12px 0;
+}
+
+/* Actions */
+.actions-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:1.5rem;
+margin-top:2rem;
+}
+
+.action-card{
+background:white;
+padding:2rem;
+border-radius:12px;
+text-align:center;
+cursor:pointer;
+box-shadow:0 4px 12px rgba(0,0,0,.05);
+transition:.3s;
+font-weight:600;
+}
+
+.action-card:hover{
+transform:translateY(-4px);
+background:#6366f1;
+color:white;
+}
+
+/* Pending */
+.pending-page{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#f8fafc;
+}
+
+.pending-box{
+background:white;
+padding:3rem;
+border-radius:16px;
+text-align:center;
+box-shadow:0 8px 24px rgba(0,0,0,.08);
+max-width:500px;
+}
+
+.pending-box h2{
+color:#6366f1;
+margin-bottom:12px;
+}
+
+.pending-box button{
+margin-top:20px;
+padding:10px 16px;
+background:#6366f1;
+border:none;
+border-radius:6px;
+color:white;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar" id="navbar">
+<div class="container nav-container">
+<div class="logo" onclick="location.href='index.html'">
+<span class="logo-icon">V</span>
+<span class="logo-text">Ternship</span>
+</div>
+
+<ul class="nav-links">
+<li><a href="index.html">Home</a></li>
+<li><a href="how-it-works.html">How It Works</a></li>
+<li><a href="about.html">About Us</a></li>
+<li><a href="contact.html">Contact</a></li>
+</ul>
+
+<div id="navAuth"></div>
+</div>
+</nav>
+
+<section class="dashboard">
+
+<div id="dashboardWrapper" class="dashboard-wrapper" style="display:none">
+
+<div class="company-sidebar">
+<h3>VTernship</h3>
+<a class="active">Dashboard</a>
+<a href="manage-internships.html">Manage Internships</a>
+<a href="review-applicants.html">Review Applicants</a>
+<a href="performance-analytics.html">Performance Analytics</a>
+<a href="certificates.html">Certificates</a>
+<a href="notifications.html">Notifications</a>
+<a href="company-profile.html">Company Profile</a>
+<a href="help-center.html">Help Center</a>
+</div>
+
+<div class="company-main">
+<div class="container">
+<div id="companyContent"></div>
+</div>
+</div>
+
+</div>
+
+<div id="pendingContainer"></div>
+
+</section>
+
+<footer class="footer" id="footer">
+<div class="container">
+<p style="text-align:center">© 2026 VTernship</p>
+</div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+
+const res = await fetch("/api/auth/check-session",{credentials:"include"});
+const data = await res.json();
+
+if(!data.authenticated || data.role!=="company"){
+location.href="auth/signin.html";
+return;
+}
+
+const user=data.user;
+
+if((user.approved||"").toLowerCase()!=="true"){
+showPendingApproval();
+}else{
+loadDashboard(user);
+}
+
+});
+
+async function loadDashboard(user){
+
+const internRes = await fetch("/api/company/internships",{credentials:"include"});
+const internData = await internRes.json();
+
+const appRes = await fetch("/api/company/applications",{credentials:"include"});
+const appData = await appRes.json();
+
+const internships = internData.internships || [];
+const apps = appData.applications || [];
+
+const activeCount = internships.filter(i=>i.status==="open").length;
+const totalApps = apps.length;
+const acceptedCount = apps.filter(a=>a.status==="accepted").length;
+
+showDashboard(user, activeCount, totalApps, acceptedCount);
+}
+
+function showDashboard(user, active, apps, accepted){
+
+document.getElementById("dashboardWrapper").style.display="flex";
+
+document.getElementById("companyContent").innerHTML=`
+<div class="welcome-card">
+<div>
+<h2>Welcome ${user.company_name}</h2>
+<p>Manage internships and hire top student talent efficiently.</p>
+</div>
+<div class="avatar-large">
+${user.company_name.substring(0,2).toUpperCase()}
+</div>
+</div>
+
+<div class="dashboard-grid">
+
+<div class="dashboard-card">
+<h3>Company Info</h3>
+<p><strong>Email:</strong> ${user.email}</p>
+<p><strong>Industry:</strong> ${user.industry||"N/A"}</p>
+<p><strong>Website:</strong> ${user.website||"N/A"}</p>
+</div>
+
+<div class="dashboard-card">
+<h3>Active Internships</h3>
+<div class="stat-number">${active}</div>
+<p>Open internships currently running</p>
+</div>
+
+<div class="dashboard-card">
+<h3>Total Applications</h3>
+<div class="stat-number">${apps}</div>
+<p>Students applied so far</p>
+</div>
+
+<div class="dashboard-card">
+<h3>Accepted Students</h3>
+<div class="stat-number">${accepted}</div>
+<p>Students successfully hired</p>
+</div>
+
+</div>
+
+<h2 style="margin-top:3rem;">Quick Actions</h2>
+
+<div class="actions-grid">
+<div class="action-card" onclick="location.href='manage-internships.html'">
+Post Internship
+</div>
+
+<div class="action-card" onclick="location.href='review-applicants.html'">
+Review Applicants
+</div>
+
+<div class="action-card" onclick="location.href='performance-analytics.html'">
+View Analytics
+</div>
+
+<div class="action-card" onclick="location.href='company-profile.html'">
+Company Profile
+</div>
+</div>
+`;
+}
+
+function showPendingApproval(){
+
+document.getElementById("navbar").style.display="none";
+document.getElementById("footer").style.display="none";
+
+document.getElementById("pendingContainer").innerHTML=`
+<div class="pending-page">
+<div class="pending-box">
+<h2>Approval Pending</h2>
+<p>Your company account is under admin review.</p>
+<p>You will gain dashboard access once approved.</p>
+<button onclick="location.href='auth/signin.html'">
+Sign Out
+</button>
+</div>
+</div>`;
+}
+</script>
+
+</body>
+</html>

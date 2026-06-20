@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Company Profile - VTernship</title>
+<link rel="stylesheet" href="css/styles.css">
+
+<style>
+.dashboard{
+  padding:120px 0 60px;
+  background:#f8fafc;
+}
+
+.dashboard-wrapper{
+  display:flex;
+}
+
+/* Sidebar */
+.company-sidebar{
+  width:250px;
+  background:linear-gradient(180deg,#6366f1,#8b5cf6);
+  color:white;
+  min-height:calc(100vh - 120px);
+  padding:20px;
+}
+
+.company-sidebar a{
+  display:block;
+  color:white;
+  padding:12px;
+  border-radius:8px;
+  text-decoration:none;
+  margin-bottom:6px;
+}
+
+.company-sidebar a:hover,
+.company-sidebar a.active{
+  background:rgba(255,255,255,0.2);
+}
+
+/* Main */
+.company-main{
+  flex:1;
+  padding:0 30px;
+}
+
+.profile-card{
+  background:white;
+  padding:30px;
+  border-radius:14px;
+  box-shadow:0 3px 12px rgba(0,0,0,0.06);
+}
+
+.profile-header{
+  display:flex;
+  align-items:center;
+  gap:20px;
+  margin-bottom:25px;
+}
+
+.avatar{
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  background:#6366f1;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:32px;
+  font-weight:bold;
+}
+
+.info-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+.info-box{
+  background:#f9fafb;
+  padding:16px;
+  border-radius:10px;
+}
+
+.info-box strong{
+  display:block;
+  margin-bottom:6px;
+  color:#6b7280;
+}
+
+.account-btn{
+  margin-top:25px;
+  padding:12px 18px;
+  border:none;
+  border-radius:8px;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:white;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+<div class="container nav-container">
+<div class="logo" onclick="location.href='index.html'">
+<span class="logo-icon">V</span>
+<span class="logo-text">Ternship</span>
+</div>
+
+<ul class="nav-links">
+<li><a href="index.html">Home</a></li>
+<li><a href="how-it-works.html">How It Works</a></li>
+<li><a href="about.html">About Us</a></li>
+<li><a href="contact.html">Contact</a></li>
+</ul>
+
+<div id="navAuth"></div>
+</div>
+</nav>
+
+<section class="dashboard">
+<div class="dashboard-wrapper">
+
+<!-- Sidebar -->
+<div class="company-sidebar">
+<h3>VTernship</h3>
+
+<a href="company-dashboard.html">Dashboard</a>
+<a href="manage-internships.html">Manage Internships</a>
+<a href="review-applicants.html">Review Applicants</a>
+<a href="performance-analytics.html">Performance Analytics</a>
+<a href="certificates.html">Certificates</a>
+<a href="notifications.html">Notifications</a>
+<a class="active">Company Profile</a>
+<a href="help-center.html">Help Center</a>
+</div>
+
+<!-- Main -->
+<div class="company-main container">
+
+<h2>Company Profile</h2>
+
+<div class="profile-card">
+
+<div class="profile-header">
+<div class="avatar" id="avatar"></div>
+
+<div>
+<h3 id="companyName"></h3>
+<p id="industryText"></p>
+</div>
+</div>
+
+<div class="info-grid">
+
+<div class="info-box">
+<strong>Email</strong>
+<span id="emailText"></span>
+</div>
+
+<div class="info-box">
+<strong>Phone</strong>
+<span id="phoneText"></span>
+</div>
+
+<div class="info-box">
+<strong>Website</strong>
+<span id="websiteText"></span>
+</div>
+
+<div class="info-box">
+<strong>Industry</strong>
+<span id="industryBox"></span>
+</div>
+
+<div class="info-box" style="grid-column:1/3;">
+<strong>Address</strong>
+<span id="addressText"></span>
+</div>
+
+</div>
+
+<button class="account-btn"
+onclick="location.href='auth/account-settings.html'">
+Go to Account Settings
+</button>
+
+</div>
+
+</div>
+</div>
+</section>
+
+<footer class="footer">
+<div class="container">
+<p style="text-align:center">© 2026 VTernship</p>
+</div>
+</footer>
+
+<script>
+let user = JSON.parse(localStorage.getItem("vternship_user"));
+
+if(!user){
+  location.href="auth/signin.html";
+}
+
+/* Avatar initials */
+const initials = user.company_name
+  .split(" ")
+  .map(w=>w[0])
+  .join("")
+  .substring(0,2);
+
+avatar.innerText = initials;
+companyName.innerText = user.company_name;
+industryText.innerText = user.industry;
+
+emailText.innerText = user.email;
+phoneText.innerText = user.phone;
+websiteText.innerText = user.website;
+industryBox.innerText = user.industry;
+addressText.innerText = user.address;
+
+function logout(){
+  localStorage.clear();
+  location.href="auth/signin.html";
+}
+</script>
+
+<script src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Manage Internships - VTernship</title>
+
+<link rel="stylesheet" href="css/styles.css">
+<script src="js/auth.js"></script>
+
+<style>
+.dashboard{padding:120px 0 60px;background:#f8fafc}
+.dashboard-wrapper{display:flex}
+
+/* Sidebar */
+.company-sidebar{
+width:250px;
+background:linear-gradient(180deg,#6366f1,#8b5cf6);
+color:white;
+min-height:calc(100vh - 120px);
+padding:20px;
+}
+
+.company-sidebar a{
+display:block;
+padding:12px;
+margin-bottom:6px;
+border-radius:8px;
+text-decoration:none;
+color:white;
+}
+
+.company-sidebar a:hover,
+.company-sidebar a.active{
+background:rgba(255,255,255,.18);
+}
+
+/* Main */
+.company-main{flex:1;padding:0 30px}
+
+.card{
+background:white;
+padding:2rem;
+border-radius:12px;
+margin-bottom:2rem;
+box-shadow:0 4px 12px rgba(0,0,0,.05);
+}
+
+input,textarea{
+width:100%;
+padding:10px;
+margin-bottom:15px;
+border:1px solid #ddd;
+border-radius:6px;
+}
+
+.btn{
+border:none;
+padding:10px 16px;
+border-radius:6px;
+cursor:pointer;
+margin-right:5px;
+}
+
+.btn-primary{background:#6366f1;color:white}
+.btn-warning{background:#f59e0b;color:white}
+.btn-danger{background:#ef4444;color:white}
+
+.internship-card{
+border:1px solid #eee;
+padding:20px;
+border-radius:10px;
+margin-bottom:15px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+<div class="container nav-container">
+<div class="logo" onclick="location.href='index.html'">
+<span class="logo-icon">V</span>
+<span class="logo-text">Ternship</span>
+</div>
+
+<ul class="nav-links">
+<li><a href="index.html">Home</a></li>
+<li><a href="how-it-works.html">How It Works</a></li>
+<li><a href="about.html">About Us</a></li>
+<li><a href="contact.html">Contact</a></li>
+</ul>
+
+<div id="navAuth"></div>
+</div>
+</nav>
+
+<section class="dashboard">
+
+<div class="dashboard-wrapper">
+
+<!-- SIDEBAR -->
+<div class="company-sidebar">
+<h3>VTernship</h3>
+<a href="company-dashboard.html">Dashboard</a>
+<a class="active">Manage Internships</a>
+<a href="review-applicants.html">Review Applicants</a>
+<a href="performance-analytics.html">Performance Analytics</a>
+<a href="certificates.html">Certificates</a>
+<a href="notifications.html">Notifications</a>
+<a href="company-profile.html">Company Profile</a>
+<a href="help-center.html">Help Center</a>
+</div>
+
+<!-- MAIN -->
+<div class="company-main">
+<div class="container">
+
+<!-- CREATE / EDIT -->
+<div class="card">
+<h2>Create / Edit Internship</h2>
+
+<form id="internshipForm">
+<input type="hidden" id="editId">
+
+<label>Title</label>
+<input name="title" required>
+
+<label>Description</label>
+<textarea name="description" required></textarea>
+
+<label>Skills</label>
+<input name="skills" required>
+
+<label>Deadline</label>
+<input type="date" name="deadline" required>
+
+<label>Dataset CSV (only for new internship)</label>
+<input type="file" name="dataset">
+
+<button class="btn btn-primary" type="submit">
+Save Internship
+</button>
+</form>
+</div>
+
+<!-- LIST -->
+<div class="card">
+<h2>Your Internships</h2>
+<div id="internshipsList"></div>
+</div>
+
+</div>
+</div>
+
+</div>
+</section>
+
+<footer class="footer">
+<div class="container">
+<p style="text-align:center">© 2026 VTernship</p>
+</div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", async ()=>{
+const res = await fetch("/api/auth/check-session",{credentials:"include"});
+const data = await res.json();
+
+if(!data.authenticated || data.role!=="company"){
+location.href="auth/signin.html";
+return;
+}
+
+loadInternships();
+});
+
+/* ================= LOAD ================= */
+async function loadInternships(){
+const res = await fetch("/api/company/internships",{credentials:"include"});
+const data = await res.json();
+
+const box=document.getElementById("internshipsList");
+box.innerHTML="";
+
+data.internships.forEach(i=>{
+box.innerHTML+=`
+<div class="internship-card">
+<h3>${i.title}</h3>
+<p>${i.description}</p>
+<p><b>Skills:</b> ${i.skills}</p>
+<p><b>Status:</b> ${i.status}</p>
+
+<button class="btn btn-primary"
+onclick='editInternship(${JSON.stringify(i)})'>
+Edit</button>
+
+
+<button class="btn btn-warning"
+onclick="toggleInternship('${i.internship_id}','${i.status}')">
+    ${i.status === "open" ? "Close" : "Reopen"}
+</button>
+
+
+<button class="btn btn-danger"
+onclick="deleteInternship('${i.internship_id}')">
+Delete</button>
+</div>`;
+});
+}
+
+/* ================= EDIT ================= */
+function editInternship(i){
+document.querySelector("[name=title]").value=i.title;
+document.querySelector("[name=description]").value=i.description;
+document.querySelector("[name=skills]").value=i.skills;
+document.querySelector("[name=deadline]").value=i.deadline;
+document.getElementById("editId").value=i.internship_id;
+
+window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ================= SAVE ================= */
+document.getElementById("internshipForm")
+.addEventListener("submit", async e=>{
+e.preventDefault();
+
+const form=new FormData(e.target);
+const editId=document.getElementById("editId").value;
+
+let response;
+
+if(editId){
+response=await fetch("/api/company/edit-internship",{
+method:"POST",
+credentials:"include",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+internship_id:editId,
+title:form.get("title"),
+description:form.get("description"),
+skills:form.get("skills"),
+deadline:form.get("deadline")
+})
+});
+}else{
+response=await fetch("/api/company/create-internship",{
+method:"POST",
+credentials:"include",
+body:form
+});
+}
+
+const data=await response.json();
+
+if(!data.success){
+alert(data.message || "Operation failed");
+return;
+}
+
+alert("Saved successfully");
+
+e.target.reset();
+document.getElementById("editId").value="";
+loadInternships();
+});
+
+/* ================= CLOSE ================= */
+async function toggleInternship(id, currentStatus) {
+
+    const action =
+        currentStatus === "open" ? "close" : "reopen";
+
+    if (!confirm(`Are you sure to ${action} internship?`))
+        return;
+
+    const res = await fetch("/api/company/close-internship", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ internship_id: id })
+    });
+
+    const result = await res.json();
+
+    if (result.success) {
+        alert(`Internship ${action}d`);
+        await loadInternships();
+    } else {
+        alert(result.message);
+    }
+}
+
+
+/* ================= DELETE ================= */
+async function deleteInternship(id){
+if(!confirm("Delete internship permanently?")) return;
+
+const res=await fetch("/api/company/delete-internship",{
+method:"POST",
+credentials:"include",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({internship_id:id})
+});
+
+const data=await res.json();
+
+if(!data.success){
+alert(data.message || "Delete failed");
+return;
+}
+
+alert("Internship deleted");
+loadInternships();
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Review Applicants - VTernship</title>
+
+<link rel="stylesheet" href="css/styles.css">
+<script src="js/auth.js"></script>
+
+<style>
+.dashboard{padding:120px 0 60px;background:#f8fafc}
+.dashboard-wrapper{display:flex}
+
+/* Sidebar */
+.company-sidebar{
+width:250px;
+background:linear-gradient(180deg,#6366f1,#8b5cf6);
+color:white;
+min-height:calc(100vh - 120px);
+padding:20px;
+}
+
+.company-sidebar a{
+display:block;
+padding:12px;
+margin-bottom:6px;
+border-radius:8px;
+text-decoration:none;
+color:white;
+}
+
+.company-sidebar a:hover,
+.company-sidebar a.active{
+background:rgba(255,255,255,.18);
+}
+
+/* Main */
+.company-main{flex:1;padding:0 30px}
+
+/* Cards */
+.card{
+background:white;
+padding:2rem;
+border-radius:12px;
+margin-bottom:2rem;
+box-shadow:0 4px 12px rgba(0,0,0,.05);
+}
+
+.applicant-card{
+border:1px solid #eee;
+padding:20px;
+border-radius:10px;
+margin-bottom:15px;
+}
+
+.status{
+font-weight:bold;
+}
+
+.status.pending{color:#f59e0b}
+.status.accepted{color:#22c55e}
+.status.rejected{color:#ef4444}
+
+.btn{
+border:none;
+padding:8px 14px;
+border-radius:6px;
+cursor:pointer;
+margin-right:6px;
+margin-top:8px;
+}
+
+.btn-success{background:#22c55e;color:white}
+.btn-danger{background:#ef4444;color:white}
+.btn-secondary{background:#6366f1;color:white}
+
+.search-box{
+width:100%;
+padding:10px;
+margin-bottom:20px;
+border-radius:8px;
+border:1px solid #ddd;
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+<div class="container nav-container">
+
+<div class="logo" onclick="location.href='index.html'">
+<span class="logo-icon">V</span>
+<span class="logo-text">Ternship</span>
+</div>
+
+<ul class="nav-links">
+<li><a href="index.html">Home</a></li>
+<li><a href="how-it-works.html">How It Works</a></li>
+<li><a href="about.html">About Us</a></li>
+<li><a href="contact.html">Contact</a></li>
+</ul>
+
+<div id="navAuth"></div>
+</div>
+</nav>
+
+<section class="dashboard">
+<div class="dashboard-wrapper">
+
+<!-- Sidebar -->
+<div class="company-sidebar">
+<h3>VTernship</h3>
+
+<a href="company-dashboard.html">Dashboard</a>
+<a href="manage-internships.html">Manage Internships</a>
+<a class="active">Review Applicants</a>
+<a href="performance-analytics.html">Performance Analytics</a>
+<a href="certificates.html">Certificates</a>
+<a href="notifications.html">Notifications</a>
+<a href="company-profile.html">Company Profile</a>
+<a href="help-center.html">Help Center</a>
+</div>
+
+<!-- Main -->
+<div class="company-main">
+<div class="container">
+
+<div class="card">
+<h2>Internship Applications</h2>
+
+<input id="searchBox" class="search-box"
+placeholder="Search by student or skills..."
+oninput="filterApps()">
+
+<div id="applicationsList"></div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+</section>
+
+<footer class="footer">
+<div class="container">
+<p style="text-align:center">© 2026 VTernship</p>
+</div>
+</footer>
+
+<script>
+let allApps=[];
+
+document.addEventListener("DOMContentLoaded", async ()=>{
+const res=await fetch("/api/auth/check-session",{credentials:"include"});
+const data=await res.json();
+
+if(!data.authenticated || data.role!=="company"){
+location.href="auth/signin.html";
+return;
+}
+
+loadApplications();
+});
+
+/* Load applications */
+async function loadApplications(){
+const res=await fetch("/api/company/applications",{credentials:"include"});
+const data=await res.json();
+
+allApps=data.applications || [];
+renderApplications(allApps);
+}
+
+/* Render applications */
+function renderApplications(apps){
+const box=document.getElementById("applicationsList");
+box.innerHTML="";
+
+if(!apps.length){
+box.innerHTML="<p>No applications yet.</p>";
+return;
+}
+
+apps.forEach(a=>{
+box.innerHTML+=`
+<div class="applicant-card">
+
+<h3>${a.student_name}</h3>
+
+<p><b>Email:</b> ${a.email}</p>
+<p><b>Skills:</b> ${a.skills}</p>
+<p><b>Applied:</b> ${new Date(a.applied_at).toLocaleDateString()}</p>
+
+<p><b>Status:</b>
+<span class="status ${a.status}">
+${a.status}
+</span>
+</p>
+
+<p><b>Cover Letter:</b><br>${a.cover_letter}</p>
+
+<p>
+<b>CV:</b>
+<a href="/api/company/view-cv/${a.cv_file}" target="_blank">
+View CV
+</a>
+</p>
+
+${actionButtons(a)}
+
+</div>`;
+});
+}
+
+/* Button logic */
+function actionButtons(a){
+
+if(a.status==="accepted"){
+return `
+<button class="btn btn-success" disabled>✓ Accepted</button>
+<button class="btn btn-danger"
+onclick="updateStatus('${a.application_id}','rejected')">
+Reject</button>`;
+}
+
+if(a.status==="rejected"){
+return `
+<button class="btn btn-danger" disabled>✗ Rejected</button>
+<button class="btn btn-success"
+onclick="updateStatus('${a.application_id}','accepted')">
+Accept</button>`;
+}
+
+return `
+<button class="btn btn-success"
+onclick="updateStatus('${a.application_id}','accepted')">
+Accept</button>
+
+<button class="btn btn-danger"
+onclick="updateStatus('${a.application_id}','rejected')">
+Reject</button>`;
+}
+
+/* Update status */
+async function updateStatus(id,status){
+
+if(!confirm(`Confirm ${status}?`)) return;
+
+const res=await fetch("/api/company/application-status",{
+method:"POST",
+credentials:"include",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+application_id:id,
+status:status
+})
+});
+
+const data=await res.json();
+
+if(!data.success){
+alert(data.message || "Failed");
+return;
+}
+
+alert("Application updated");
+loadApplications();
+}
+
+/* Filter applications */
+function filterApps(){
+const q=document.getElementById("searchBox").value.toLowerCase();
+
+const filtered=allApps.filter(a=>
+a.student_name.toLowerCase().includes(q) ||
+a.skills.toLowerCase().includes(q)
+);
+
+renderApplications(filtered);
+}
+</script>
+
+</body>
+</html>

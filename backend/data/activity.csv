@@ -1,0 +1,52 @@
+id,type,message,created_at
+a85597ee-6f92-4ac1-b379-b1fb6ebb589f,company_approved,Company 'apple' approved by admin,2026-02-07T22:46:11.212316
+48055397-885a-43f2-8c79-ed6cc59a652d,company_unapproved,Company 'TeamX' approval removed,2026-02-07T22:46:13.231316
+237ba0c2-e433-41dd-9a69-81c0b2c15c6a,company_unapproved,Company 'apple' approval removed,2026-02-07T22:46:15.432104
+be4f2655-0fe6-4a0e-a286-4da56191c494,company_approved,Company 'apple' approved by admin,2026-02-07T22:50:11.433555
+46f5148c-50a2-4b93-9071-f19c937864b6,company_approved,Company 'TeamX' approved by admin,2026-02-07T22:58:42.198739
+8b116b35-19e0-49a0-9686-0300fd052c68,company_unapproved,Company 'apple' approval removed,2026-02-07T23:02:05.203640
+fda27064-6eaf-4eb5-b167-7ce1fc8f585f,company_approved,Company 'apple' approved by admin,2026-02-07T23:36:08.655072
+7bd0636d-4d75-47a9-84e9-d630c41713fa,download,Students PDF downloaded,2026-02-07T23:42:48.323372
+7af0da37-3eca-4d70-b06d-75bc337e0a5d,download,Students PDF downloaded,2026-02-07T23:42:53.533291
+abb49a1f-85be-4807-928a-6f7b36673a76,company_unapproved,Company 'TeamX' approval removed,2026-02-07T23:42:58.809305
+8771f7eb-365c-4895-bd5a-c19a49655b1b,download,Students PDF downloaded,2026-02-07T23:43:06.238390
+21f01f76-ecac-49ec-902d-b4a1dfcbe611,download,Students PDF downloaded,2026-02-07T23:45:37.941283
+77152413-5429-464f-a359-5e4e9b11caf1,company_approved,Company 'TeamX' approved by admin,2026-02-07T23:46:46.173772
+19dc6884-b35d-4764-ac4b-851aadac42ae,company_unapproved,Company 'apple' approval removed,2026-02-08T00:10:57.015960
+c7b23ee0-1fa0-4cf1-9e5f-ff4719dce2d5,download,Students PDF downloaded,2026-02-08T00:12:59.053579
+6f84775d-5a9b-49f4-a4f2-298b0841e314,download,Students PDF downloaded,2026-02-08T00:13:18.257573
+d85930c4-26a3-44e1-8040-578a86e79e94,download,Students PDF downloaded,2026-02-08T00:13:28.409541
+545fd1a6-df95-41b5-9142-fbebd37ae9af,download,Companies CSV downloaded,2026-02-08T00:13:35.329443
+5e09237c-b01c-480a-b405-7306baceb47b,download,Companies PDF downloaded,2026-02-08T00:13:37.644741
+27302b26-8cdd-43ce-badb-f4f872356fa2,download,Students CSV downloaded,2026-02-08T00:14:15.424736
+c3317688-ede2-4879-ab3b-a42b2bfc4ed3,company_approved,Company 'apple' approved by admin,2026-02-08T00:35:58.821564
+c3dbb960-8cb2-4200-962f-fba9798b061b,company_unapproved,Company 'TeamX' approval removed,2026-02-08T00:36:07.509205
+76cb68e1-2a63-4361-913e-77681bdbfa18,download,Companies PDF downloaded,2026-02-08T00:39:59.685497
+e5c55a2f-71a2-4fa5-a790-9c0a2113d87e,download,Companies CSV downloaded,2026-02-08T00:49:21.560630
+4da33c30-8ee7-4771-b862-4c5aa5b25509,download,Students PDF downloaded,2026-02-08T01:08:34.664004
+0a7a1876-08fe-4a1c-9570-c693f136c23b,download,Students CSV downloaded,2026-02-08T01:08:36.975213
+d900045d-a06b-4389-8519-b94f835d0711,download,Students PDF downloaded,2026-02-08T01:08:40.285284
+69702e7e-949d-4512-a210-ab111f38b15d,download,Students PDF downloaded,2026-02-08T01:08:45.458158
+012ca03d-5ed3-49e7-a301-0029074b903c,download,Students CSV downloaded,2026-02-08T01:08:58.271288
+97eb0497-9706-4a4e-afab-75dacb250e1d,download,Companies PDF downloaded,2026-02-08T01:13:25.663887
+c2f5db76-191a-403c-8142-1eb13a056b8c,download,Companies CSV downloaded,2026-02-08T01:13:27.684246
+6e14c984-37c1-4e69-bab8-02ce3ffd82b1,download,Students CSV downloaded,2026-02-08T19:02:30.963644
+a21d1a92-3bb2-4756-b3f8-57f53e66da26,download,Students PDF downloaded,2026-02-08T19:02:46.136469
+a5355f24-916a-4e62-b88d-966aa7451782,download,Companies PDF downloaded,2026-02-08T23:30:54.596137
+fdf69e8f-6c25-4970-909c-7831f01ba788,download,Companies CSV downloaded,2026-02-08T23:30:58.197843
+527d63dd-6b2c-4a21-9ae8-205957b836e6,download,Students PDF downloaded,2026-02-08T23:31:02.416737
+3b263f64-c9d9-45a1-b940-edcd59410969,download,Students CSV downloaded,2026-02-08T23:31:05.137739
+09c7c6b8-55c7-4b23-854e-ec23b740b5f8,download,Students PDF downloaded,2026-02-08T23:31:07.641462
+502f73b9-a80a-444c-a863-30c28deaae07,download,Students CSV downloaded,2026-02-09T18:43:26.683020
+7a95637f-4100-46c4-a8ee-dac4142827a2,download,Students PDF downloaded,2026-02-09T18:43:30.288465
+a333280e-3590-4580-9591-416d3136f724,download,Companies CSV downloaded,2026-02-09T18:43:34.191861
+529d0b53-85eb-4652-bb54-4ad0ef2ff0f2,download,Companies PDF downloaded,2026-02-09T18:43:37.733161
+961c17b9-7a9a-4ceb-879b-5d6b56551c86,company_unapproved,Company 'apple' approval removed,2026-02-09T22:12:20.502788
+62a4ae0f-c8cc-40e1-b20a-f859f45912fe,company_approved,Company 'apple' approved by admin,2026-02-09T22:17:18.845448
+dfa4274e-a38c-4647-99d3-df158f87d0fb,company_approved,Company 'BeerAssociate' approved by admin,2026-02-12T18:50:41.049354
+23de3095-87c2-4cc4-964d-e0f12a67347c,company_approved,Company 'BeerAssociate' approved by admin,2026-02-12T18:50:43.895786
+7abfa686-7e94-48ea-acdb-d5813d323b4f,company_approved,Company 'BeerAssociate' approved by admin,2026-02-12T18:50:46.671605
+9f794757-9e65-4d50-b302-3be58afad51f,download,Companies CSV downloaded,2026-02-12T19:08:57.598797
+7c0cddf0-2c65-4d07-bc44-de0df5178a3f,download,Students CSV downloaded,2026-02-12T19:12:03.686253
+71e81666-ea4d-40c6-bfc7-d8d13c61b8f1,download,Students PDF downloaded,2026-02-12T19:12:08.789881
+3ee3fe0c-16d5-417c-9540-93109d451edf,download,Companies PDF downloaded,2026-02-12T19:12:15.550609

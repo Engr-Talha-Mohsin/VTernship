@@ -1,0 +1,5 @@
+id,company_name,email,password,phone,website,industry,address,verified,approved,created_at
+18cf9852-29e6-46ce-a501-5f0ac3018348,Apple,freescodings@gmail.com,pbkdf2:sha256:600000$lmkj0vF3au5wicVf$410b2947c7e6073ba5eb5c29e646e4e015b71f7fdb890c532c86e99f635a90b2,+923252255518,http://freecodings.com/,Technology,Karachi,true,true,2026-02-02T16:00:33.809000
+b63e30cf-4d43-4697-bd64-97034ac94448,TeamX,realmuneeb77@gmail.com,pbkdf2:sha256:600000$qTNyqmgUJfw8URXK$545f1bd2582e2c9b19fa9e50848ce850b33820a3877848758ed42f55cf318887,+923252255518,http://fitnesmentor.com/,Technology,"Karachi, karsaz,hanif S.R.E,13/145.
+Fasliabad,Tandliwala,chak no.410",true,false,2026-02-07T17:18:39.169889
+737a255a-d5c2-48fd-913d-3d62b5b85156,BeerAssociate,anasiqbal892@gmail.com,pbkdf2:sha256:600000$8woeVpQxBfASVBmZ$d22c28c0472d7e4851219e87e4e82328bd532cdb0a079aa73fb83230f0e9513b,+923302524732,http://freecodings.com/,Finance,"A 139 X Block C, Guslshan-e-Jamal, Karachi",true,true,2026-02-12T18:47:12.281066

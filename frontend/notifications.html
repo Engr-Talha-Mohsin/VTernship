@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Notifications - VTernship</title>
+
+<link rel="stylesheet" href="css/styles.css">
+<script src="js/auth.js"></script>
+
+<style>
+.dashboard{padding:120px 0 60px;background:#f8fafc}
+.dashboard-wrapper{display:flex}
+
+.company-sidebar{
+width:250px;
+background:linear-gradient(180deg,#6366f1,#8b5cf6);
+color:white;
+min-height:calc(100vh - 120px);
+padding:20px;
+}
+
+.company-sidebar a{
+display:block;
+color:rgba(255,255,255,.9);
+padding:12px;
+border-radius:8px;
+text-decoration:none;
+margin-bottom:6px;
+}
+
+.company-sidebar a:hover,
+.company-sidebar a.active{
+background:rgba(255,255,255,.2);
+}
+
+.company-main{flex:1;padding:0 30px}
+
+.header-row{
+display:flex;
+justify-content:space-between;
+margin-bottom:20px;
+}
+
+.header-row button{
+padding:8px 14px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+background:#6366f1;
+color:white;
+margin-left:8px;
+}
+
+.notification-box{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+.notification-item{
+padding:16px;
+border-bottom:1px solid #eee;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.notification-item.unread{
+background:#eef2ff;
+}
+
+.notification-time{
+font-size:12px;
+color:#777;
+margin-top:4px;
+}
+
+.notification-actions button{
+border:none;
+padding:6px 10px;
+margin-left:6px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.read-btn{background:#10b981;color:white;}
+.delete-btn{background:#ef4444;color:white;}
+
+.empty{
+text-align:center;
+padding:40px;
+color:#888;
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+<div class="container nav-container">
+<div class="logo" onclick="location.href='index.html'">
+<span class="logo-icon">V</span>
+<span class="logo-text">Ternship</span>
+</div>
+
+<ul class="nav-links">
+<li><a href="index.html">Home</a></li>
+<li><a href="how-it-works.html">How It Works</a></li>
+<li><a href="about.html">About Us</a></li>
+<li><a href="contact.html">Contact</a></li>
+</ul>
+
+<div id="navAuth"></div>
+</div>
+</nav>
+
+<section class="dashboard">
+<div class="dashboard-wrapper">
+
+<div class="company-sidebar">
+<h3>VTernship</h3>
+<a href="company-dashboard.html">Dashboard</a>
+<a href="manage-internships.html">Manage Internships</a>
+<a href="review-applicants.html">Review Applicants</a>
+<a href="performance-analytics.html">Performance Analytics</a>
+<a href="certificates.html">Certificates</a>
+<a class="active">Notifications</a>
+<a href="company-profile.html">Company Profile</a>
+<a href="help-center.html">Help Center</a>
+</div>
+
+<div class="company-main">
+<div class="container">
+
+<div class="header-row">
+<h2>Notifications</h2>
+<div>
+<button onclick="markAllRead()">Mark All Read</button>
+<button onclick="clearAll()">Clear All</button>
+</div>
+</div>
+
+<div class="notification-box" id="notificationList"></div>
+
+</div>
+</div>
+
+</div>
+</section>
+
+<footer class="footer">
+<div class="container">
+<p style="text-align:center">© 2026 VTernship</p>
+</div>
+</footer>
+
+<script>
+let notifications=[];
+let internships=[];
+let applications=[];
+
+document.addEventListener("DOMContentLoaded", async ()=>{
+const session = await fetch("/api/auth/check-session",{credentials:"include"});
+const user = await session.json();
+
+if(!user.authenticated || user.role!=="company"){
+location.href="auth/signin.html";
+return;
+}
+
+await loadData();
+});
+
+/* Load data */
+async function loadData(){
+const iRes = await fetch("/api/company/internships",{credentials:"include"});
+internships = (await iRes.json()).internships || [];
+
+const aRes = await fetch("/api/company/applications",{credentials:"include"});
+applications = (await aRes.json()).applications || [];
+
+generateNotifications();
+renderNotifications();
+}
+
+/* Generate notifications from applications */
+function generateNotifications(){
+
+notifications = applications.map(a=>{
+const internship = internships.find(
+i=>i.internship_id===a.internship_id
+);
+
+return {
+id:a.application_id,
+text:`${a.student_name} applied for "${internship ? internship.title : "an internship"}"`,
+time:a.applied_at,
+read:false
+};
+})
+.sort((a,b)=>new Date(b.time)-new Date(a.time));
+}
+
+/* Render */
+function renderNotifications(){
+const container=document.getElementById("notificationList");
+
+if(notifications.length===0){
+container.innerHTML=`<div class="empty">No notifications available.</div>`;
+return;
+}
+
+container.innerHTML = notifications.map((n,i)=>`
+<div class="notification-item ${n.read?"":"unread"}">
+<div>
+<div>${n.text}</div>
+<div class="notification-time">
+${new Date(n.time).toLocaleString()}
+</div>
+</div>
+
+<div class="notification-actions">
+${!n.read?`
+<button class="read-btn" onclick="markRead(${i})">
+Mark Read
+</button>`:""}
+
+<button class="delete-btn" onclick="deleteNotification(${i})">
+Delete
+</button>
+</div>
+</div>
+`).join("");
+}
+
+/* Actions */
+function markRead(i){
+notifications[i].read=true;
+renderNotifications();
+}
+
+function deleteNotification(i){
+notifications.splice(i,1);
+renderNotifications();
+}
+
+function markAllRead(){
+notifications.forEach(n=>n.read=true);
+renderNotifications();
+}
+
+function clearAll(){
+if(confirm("Clear all notifications?")){
+notifications=[];
+renderNotifications();
+}
+}
+</script>
+
+</body>
+</html>

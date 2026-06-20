@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Help Center - VTernship</title>
+<link rel="stylesheet" href="css/styles.css">
+
+<style>
+.dashboard{
+  padding:120px 0 60px;
+  background:#f8fafc;
+}
+
+.dashboard-wrapper{
+  display:flex;
+}
+
+/* Sidebar */
+.company-sidebar{
+  width:250px;
+  background:linear-gradient(180deg,#6366f1,#8b5cf6);
+  color:white;
+  min-height:calc(100vh - 120px);
+  padding:20px;
+}
+
+.company-sidebar a{
+  display:block;
+  color:white;
+  padding:12px;
+  border-radius:8px;
+  text-decoration:none;
+  margin-bottom:6px;
+}
+
+.company-sidebar a:hover,
+.company-sidebar a.active{
+  background:rgba(255,255,255,0.2);
+}
+
+/* Main */
+.company-main{
+  flex:1;
+  padding:0 30px;
+}
+
+.help-header{
+  background:white;
+  padding:30px;
+  border-radius:14px;
+  margin-bottom:20px;
+  box-shadow:0 3px 12px rgba(0,0,0,0.06);
+}
+
+.help-header input{
+  width:100%;
+  padding:12px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  margin-top:12px;
+}
+
+.faq-box{
+  background:white;
+  padding:24px;
+  border-radius:14px;
+  margin-bottom:20px;
+  box-shadow:0 3px 12px rgba(0,0,0,0.05);
+}
+
+.faq-item{
+  border-bottom:1px solid #eee;
+  padding:14px 0;
+  cursor:pointer;
+}
+
+.faq-answer{
+  display:none;
+  color:#555;
+  margin-top:6px;
+}
+
+.contact-box{
+  background:white;
+  padding:24px;
+  border-radius:14px;
+  box-shadow:0 3px 12px rgba(0,0,0,0.05);
+}
+
+.contact-box input,
+.contact-box textarea{
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  border:1px solid #ccc;
+  border-radius:8px;
+}
+
+.send-btn{
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:white;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+<div class="container nav-container">
+<div class="logo" onclick="location.href='index.html'">
+<span class="logo-icon">V</span>
+<span class="logo-text">Ternship</span>
+</div>
+
+<ul class="nav-links">
+<li><a href="index.html">Home</a></li>
+<li><a href="how-it-works.html">How It Works</a></li>
+<li><a href="about.html">About Us</a></li>
+<li><a href="contact.html">Contact</a></li>
+</ul>
+
+<div id="navAuth"></div>
+</div>
+</nav>
+
+<section class="dashboard">
+<div class="dashboard-wrapper">
+
+<!-- Sidebar -->
+<div class="company-sidebar">
+<h3>VTernship</h3>
+
+<a href="company-dashboard.html">Dashboard</a>
+<a href="manage-internships.html">Manage Internships</a>
+<a href="review-applicants.html">Review Applicants</a>
+<a href="performance-analytics.html">Performance Analytics</a>
+<a href="certificates.html">Certificates</a>
+<a href="notifications.html">Notifications</a>
+<a href="company-profile.html">Company Profile</a>
+<a class="active">Help Center</a>
+</div>
+
+<!-- Main -->
+<div class="company-main container">
+
+<div class="help-header">
+<h2>Help Center</h2>
+<p>Find answers or contact support for assistance.</p>
+<input placeholder="Search help topics..." onkeyup="searchFAQ(this.value)">
+</div>
+
+<!-- FAQ -->
+<div class="faq-box">
+<h3>Frequently Asked Questions</h3>
+
+<div class="faq-item" onclick="toggleFAQ(this)">
+<strong>How do I post an internship?</strong>
+<div class="faq-answer">
+Go to Manage Internships and click "Post Internship".
+</div>
+</div>
+
+<div class="faq-item" onclick="toggleFAQ(this)">
+<strong>How can I review applicants?</strong>
+<div class="faq-answer">
+Navigate to Review Applicants from sidebar to view and manage candidates.
+</div>
+</div>
+
+<div class="faq-item" onclick="toggleFAQ(this)">
+<strong>How do I update company information?</strong>
+<div class="faq-answer">
+Open Company Profile and go to Account Settings to update details.
+</div>
+</div>
+
+<div class="faq-item" onclick="toggleFAQ(this)">
+<strong>Why is my internship not receiving applications?</strong>
+<div class="faq-answer">
+Ensure internship is open and skills requirements are correct.
+</div>
+</div>
+
+</div>
+
+<!-- Contact -->
+<div class="contact-box">
+<h3>Contact Support</h3>
+
+<input placeholder="Subject">
+<textarea rows="4" placeholder="Describe your issue"></textarea>
+
+<button class="send-btn" onclick="sendSupport()">Send Message</button>
+</div>
+
+</div>
+</div>
+</section>
+
+<footer class="footer">
+<div class="container">
+<p style="text-align:center">© 2026 VTernship</p>
+</div>
+</footer>
+
+<script>
+function toggleFAQ(el){
+  const answer = el.querySelector(".faq-answer");
+  answer.style.display =
+    answer.style.display === "block" ? "none" : "block";
+}
+
+function searchFAQ(query){
+  query = query.toLowerCase();
+  document.querySelectorAll(".faq-item").forEach(item=>{
+    item.style.display =
+      item.innerText.toLowerCase().includes(query)
+      ? "block" : "none";
+  });
+}
+
+function sendSupport(){
+  alert("Support request sent successfully!");
+}
+
+function logout(){
+  localStorage.clear();
+  location.href="auth/signin.html";
+}
+</script>
+
+<script src="js/auth.js"></script>
+</body>
+</html>
